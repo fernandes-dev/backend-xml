@@ -13,7 +13,10 @@ class FolderController {
     response.implicitEnd = false;
 
     try {
-      const dir = path.resolve('/', 'Users', 'eduar', 'Desktop', 'xml');
+      let dir;
+      if (process.env.NODE_ENV === 'production')
+        dir = path.resolve('/', 'home', 'ftpvedas', 'vedas-ftp', 'xml');
+      else dir = path.resolve('/', 'Users', 'eduar', 'Desktop', 'xml');
 
       const tree = dree.scan(dir, { depth: 1 });
 
