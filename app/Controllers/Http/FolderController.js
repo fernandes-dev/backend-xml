@@ -1,6 +1,6 @@
 const path = require('path');
 const dree = require('dree');
-const sizeOnDisk = require('size-on-disk');
+// const sizeOnDisk = require('size-on-disk');
 // const onezip = require('onezip');
 
 const fs = require('fs');
@@ -85,29 +85,33 @@ class FolderController {
 
         const output = fs.createWriteStream(`${newDir}${typeBar}${name}.zip`);
 
-        new Promise((resolve) => {
-          sizeOnDisk(resolved, (err, bytes) => {
-            if (err) throw err;
-            resolve(bytes);
-          });
-        }).then((e) => {
-          return e;
-        });
+        // new Promise((resolve) => {
+        //   sizeOnDisk(resolved, (err, bytes) => {
+        //     if (err) throw err;
+        //     resolve(bytes);
+        //   });
+        // }).then((e) => {
+        //   return e;
+        // });
 
         archive.pipe(output);
-
         archive.directory(resolved, name);
 
         await archive.finalize();
-        return response.send(`${newDir}${typeBar}${name}.zip`);
+
+        output.on('close', () => {
+          // return
+          response.send(`${newDir}${typeBar}${name}.zip`);
+        });
       }
+      if (type !== 'directory') {
+        const zipFile = new AdmZip();
 
-      const zipFile = new AdmZip();
+        zipFile.addLocalFile(resolved);
+        zipFile.writeZip(`${newDir}${typeBar}${name}.zip`);
 
-      zipFile.addLocalFile(resolved);
-      zipFile.writeZip(`${newDir}${typeBar}${name}.zip`);
-
-      return response.download(`${newDir}${typeBar}${name}.zip`);
+        return response.download(`${newDir}${typeBar}${name}.zip`);
+      }
     } catch (error) {
       return response
         .status(400)
