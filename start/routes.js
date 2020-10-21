@@ -14,6 +14,13 @@
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use('Route');
 
+const Helpers = use('Helpers');
+
+// Temporary verification method
+Route.get('/.well-known/acme-challenge/:key', ({ response }) => {
+  return response.attachment(Helpers.publicPath('/challenge'));
+});
+
 Route.resource('/client', 'ClientController').apiOnly();
 
 Route.resource('/folder', 'FolderController').apiOnly();
