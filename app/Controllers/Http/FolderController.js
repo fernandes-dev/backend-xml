@@ -82,8 +82,15 @@ class FolderController {
         const archive = archiver('zip', {
           zlib: { level: 5 },
         });
-
+        console.log(
+          'ANTES de criar o writestream',
+          `${newDir}${typeBar}${name}.zip`
+        );
         const output = fs.createWriteStream(`${newDir}${typeBar}${name}.zip`);
+        console.log(
+          'DEPOIS de criar o writestream',
+          `${newDir}${typeBar}${name}.zip`
+        );
 
         // new Promise((resolve) => {
         //   sizeOnDisk(resolved, (err, bytes) => {
