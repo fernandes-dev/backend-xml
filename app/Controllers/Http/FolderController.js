@@ -92,8 +92,11 @@ class FolderController {
         });
         console.log('saída: ', `${newDir}${typeBar}${name}.zip`);
         console.log('dir: ', `${newDir}${typeBar}`);
+        console.log('path resolve: ', path.resolve('/', newDir, `${name}.zip`));
 
-        const output = fs.createWriteStream(`${newDir}${typeBar}${name}.zip`);
+        const output = fs.createWriteStream(
+          path.resolve('/', newDir, `${name}.zip`)
+        );
         output.on('open', (data) => console.log('open output:', data));
         output.on('ready', (data) => console.log('ready output:', data));
         // new Promise((resolve) => {
