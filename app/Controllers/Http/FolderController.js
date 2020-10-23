@@ -66,7 +66,7 @@ class FolderController {
     response.implicitEnd = false;
     const { dir, type, name } = request.all();
 
-    const typeBar = '\\';
+    const typeBar = '/';
 
     const resolved = path.resolve('/', ...dir);
     let newDir = dir;
@@ -85,9 +85,9 @@ class FolderController {
 
         fs.access(newDir, fs.constants.R_OK || fs.constants.W_OK, (err) => {
           if (err) {
-            console.log("%s doesn't exist", path);
+            console.log("%s doesn't exist", newDir);
           } else {
-            console.log('can read/write %s', path);
+            console.log('can read/write %s', newDir);
           }
         });
         console.log('saída: ', `${newDir}${typeBar}${name}.zip`);
