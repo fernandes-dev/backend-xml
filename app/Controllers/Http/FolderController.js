@@ -90,9 +90,12 @@ class FolderController {
             console.log('can read/write %s', path);
           }
         });
+        console.log('saída: ', `${newDir}${typeBar}${name}.zip`);
+        console.log('dir: ', `${newDir}${typeBar}`);
 
         const output = fs.createWriteStream(`${newDir}${typeBar}${name}.zip`);
-
+        output.on('open', (data) => console.log('open output:', data));
+        output.on('ready', (data) => console.log('ready output:', data));
         // new Promise((resolve) => {
         //   sizeOnDisk(resolved, (err, bytes) => {
         //     if (err) throw err;
