@@ -94,6 +94,14 @@ class FolderController {
         //   return e;
         // });
 
+        archive.on('error', (err) => {
+          console.log('erro no archive', err);
+        });
+
+        output.on('error', (err) => {
+          console.log('erro no output', err);
+        });
+
         archive.pipe(output);
         archive.directory(resolved, name);
 
