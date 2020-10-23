@@ -65,13 +65,14 @@ class FolderController {
   async store({ request, response }) {
     response.implicitEnd = false;
     const { dir, type, name } = request.all();
-
+    console.log('dir 1: ', dir);
     const typeBar = '/';
 
     const resolved = path.resolve('/', ...dir);
     let newDir = dir;
     newDir.pop();
     newDir = path.resolve('/', ...newDir);
+    console.log('newdir 1: ', newDir);
 
     const isZip = resolved.indexOf('.zip') > 0;
 
