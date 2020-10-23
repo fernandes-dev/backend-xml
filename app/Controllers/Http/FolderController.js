@@ -82,15 +82,16 @@ class FolderController {
         const archive = archiver('zip', {
           zlib: { level: 5 },
         });
-        console.log(
-          'ANTES de criar o writestream',
-          `${newDir}${typeBar}${name}.zip`
-        );
+
+        fs.access(newDir, fs.constants.R_OK || fs.constants.W_OK, (err) => {
+          if (err) {
+            console.log("%s doesn't exist", path);
+          } else {
+            console.log('can read/write %s', path);
+          }
+        });
+
         const output = fs.createWriteStream(`${newDir}${typeBar}${name}.zip`);
-        console.log(
-          'DEPOIS de criar o writestream',
-          `${newDir}${typeBar}${name}.zip`
-        );
 
         // new Promise((resolve) => {
         //   sizeOnDisk(resolved, (err, bytes) => {
