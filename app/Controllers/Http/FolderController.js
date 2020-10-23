@@ -65,14 +65,13 @@ class FolderController {
   async store({ request, response }) {
     response.implicitEnd = false;
     const { dir, type, name } = request.all();
-    console.log('dir 1: ', dir);
-    const typeBar = '/';
+
+    const typeBar = '\\';
 
     const resolved = path.resolve('/', ...dir);
     let newDir = dir;
     newDir.pop();
     newDir = path.resolve('/', ...newDir);
-    console.log('newdir 1: ', newDir);
 
     const isZip = resolved.indexOf('.zip') > 0;
 
@@ -84,22 +83,8 @@ class FolderController {
           zlib: { level: 5 },
         });
 
-        fs.access(newDir, fs.constants.R_OK || fs.constants.W_OK, (err) => {
-          if (err) {
-            console.log("%s doesn't exist", newDir);
-          } else {
-            console.log('can read/write %s', newDir);
-          }
-        });
-        console.log('saída: ', `${newDir}${typeBar}${name}.zip`);
-        console.log('dir: ', `${newDir}${typeBar}`);
-        console.log('path resolve: ', path.resolve('/', newDir, `${name}.zip`));
+        const output = fs.createWriteStream(`${newDir}${typeBar}${name}.zip`);
 
-        const output = fs.createWriteStream(
-          path.resolve('/', newDir, `${name}.zip`)
-        );
-        output.on('open', (data) => console.log('open output:', data));
-        output.on('ready', (data) => console.log('ready output:', data));
         // new Promise((resolve) => {
         //   sizeOnDisk(resolved, (err, bytes) => {
         //     if (err) throw err;
@@ -108,14 +93,6 @@ class FolderController {
         // }).then((e) => {
         //   return e;
         // });
-
-        archive.on('error', (err) => {
-          console.log('erro no archive', err);
-        });
-
-        output.on('error', (err) => {
-          console.log('erro no output', err);
-        });
 
         archive.pipe(output);
         archive.directory(resolved, name);
