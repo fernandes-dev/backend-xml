@@ -6,6 +6,8 @@
 const Count = use('App/Models/Count');
 const Token = use('App/Models/Token');
 const Encryption = use('Encryption');
+const isAfter = require('date-fns/isAfter');
+const addHours = require('date-fns/addHours');
 
 class CountController {
   async index() {
@@ -20,7 +22,10 @@ class CountController {
     try {
       const { contador_cnpj, contador_senha } = request.all();
 
-      const count = await Count.findByOrFail({ contador_cnpj });
+      const count = await Count.findByOrFail({
+        contador_cnpj,
+        contador_senha,
+      });
 
       if (count.contador_status !== 'ATIVO')
         return response.status(401).send({
@@ -43,6 +48,40 @@ class CountController {
     } catch (error) {
       return response.status(400).send({
         message: 'Erro ao realizar login, entre em contato com o suporte',
+        error: error.message,
+      });
+    }
+  }
+
+  async verify({ request, response }) {
+    try {
+      const token = await Token.findByOrFail({
+        token: request.headers().authorization,
+      });
+
+      if (isAfter(new Date(), addHours(token.created_at, 20))) {
+        return response.status(400).send({
+          message: 'Sua sessão expirou, faça login novamente!',
+        });
+      }
+
+      let count = await Count.query()
+        .with('clientReleased')
+        .where('contador_id', token.contador_id)
+        .fetch();
+      [count] = count.toJSON();
+
+      if (count.contador_status !== 'ATIVO')
+        return response.status(401).send({
+          message: 'Seu cadastro está inativo.',
+        });
+
+      count.token = token;
+
+      return count;
+    } catch (error) {
+      return response.status(400).send({
+        message: 'Sua sessão expirou, faça login novamente!',
         error: error.message,
       });
     }

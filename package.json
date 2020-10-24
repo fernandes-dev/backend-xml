@@ -29,6 +29,7 @@
     "@adonisjs/lucid": "^6.1.3",
     "adm-zip": "^0.4.16",
     "archiver": "^5.0.2",
+    "date-fns": "^2.16.1",
     "dree": "^2.4.16",
     "gzipme": "^1.0.0",
     "mysql": "^2.18.1",

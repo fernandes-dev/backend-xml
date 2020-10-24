@@ -21,6 +21,7 @@ Route.get('/.well-known/acme-challenge/:key', ({ response }) => {
   return response.attachment(Helpers.publicPath('/challenge'));
 });
 Route.post('/login', 'CountController.login');
+Route.post('/verify', 'CountController.verify');
 
 Route.put('/update-password', 'CountController.update');
 

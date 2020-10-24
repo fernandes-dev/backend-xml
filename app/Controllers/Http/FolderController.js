@@ -9,6 +9,7 @@ const archiver = require('archiver');
 const AdmZip = require('adm-zip');
 
 const Count = use('App/Models/Count');
+const Client = use('App/Models/Client');
 const Token = use('App/Models/Token');
 
 class FolderController {
@@ -31,15 +32,45 @@ class FolderController {
       else dir = path.resolve('/', 'Users', 'eduar', 'Desktop', 'xml');
 
       const tree = dree.scan(dir, { depth: 1 });
+      const cnpjs = count.clientReleased.map((item) =>
+        item.cnpjliberado_cnpj.toString()
+      );
+
+      let clients = await Client.all();
+      clients = clients.toJSON();
+      const clientReleased = [];
+      clients.forEach((c) => {
+        if (c.clientes_cnpj && c.clientes_cnpj.length > 6)
+          c.clientes_cnpj = c.clientes_cnpj.match(/[0-9]/g).join('');
+        if (cnpjs.indexOf(c.clientes_cnpj) >= 0) {
+          clientReleased.push(c);
+        }
+      });
+
+      count.clientReleased = clientReleased;
 
       if (count.clientReleased.length > 0) {
         const newChildren = [];
         tree.children.forEach((folder) => {
           if (
             count.clientReleased.find(
-              (item) => item.cnpjliberado_cnpj.toString() === folder.name
+              (item) => item.clientes_cnpj === folder.name
             )
           ) {
+            folder.client = count.clientReleased.find(
+              (item) => item.clientes_cnpj === folder.name
+            );
+            newChildren.push(folder);
+          }
+        });
+        tree.children = newChildren;
+      } else {
+        const newChildren = [];
+        tree.children.forEach((folder) => {
+          if (clients.find((item) => item.clientes_cnpj === folder.name)) {
+            folder.client = clients.find(
+              (item) => item.clientes_cnpj === folder.name
+            );
             newChildren.push(folder);
           }
         });
