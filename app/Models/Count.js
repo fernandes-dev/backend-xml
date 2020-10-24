@@ -2,8 +2,20 @@
 const Model = use('Model');
 
 class Count extends Model {
-  clients() {
-    return this.hasMany('App/Models/Client');
+  static get table() {
+    return 'cad_contador';
+  }
+
+  static get primaryKey() {
+    return 'contador_id';
+  }
+
+  clientReleased() {
+    return this.hasMany(
+      'App/Models/ClientReleased',
+      'contador_id',
+      'contador_id'
+    );
   }
 }
 

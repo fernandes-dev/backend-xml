@@ -20,6 +20,11 @@ const Helpers = use('Helpers');
 Route.get('/.well-known/acme-challenge/:key', ({ response }) => {
   return response.attachment(Helpers.publicPath('/challenge'));
 });
+Route.post('/login', 'CountController.login');
+
+Route.put('/update-password', 'CountController.update');
+
+Route.resource('/count', 'CountController').apiOnly();
 
 Route.resource('/client', 'ClientController').apiOnly();
 

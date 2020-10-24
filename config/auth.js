@@ -14,7 +14,7 @@ module.exports = {
   | Available Serializers - lucid, database
   |
   */
-  authenticator: 'jwt',
+  authenticator: 'basic',
 
   /*
   |--------------------------------------------------------------------------
@@ -48,10 +48,10 @@ module.exports = {
   */
   basic: {
     serializer: 'lucid',
-    model: 'App/Models/User',
+    model: 'App/Models/Count',
     scheme: 'basic',
-    uid: 'email',
-    password: 'password',
+    uid: 'contador_cnpj',
+    password: 'contador_senha',
   },
 
   /*

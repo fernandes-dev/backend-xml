@@ -8,11 +8,23 @@ const fs = require('fs');
 const archiver = require('archiver');
 const AdmZip = require('adm-zip');
 
+const Count = use('App/Models/Count');
+const Token = use('App/Models/Token');
+
 class FolderController {
-  async index({ response }) {
+  async index({ response, request }) {
     response.implicitEnd = false;
 
     try {
+      const token = await Token.findByOrFail({
+        token: request.headers().authorization,
+      });
+      let count = await Count.query()
+        .with('clientReleased')
+        .where('contador_id', token.contador_id)
+        .fetch();
+      [count] = count.toJSON();
+
       let dir;
       if (process.env.NODE_ENV === 'production')
         dir = path.resolve('/', 'home', 'ftpvedas', 'vedas-ftp', 'xml');
@@ -20,6 +32,19 @@ class FolderController {
 
       const tree = dree.scan(dir, { depth: 1 });
 
+      if (count.clientReleased.length > 0) {
+        const newChildren = [];
+        tree.children.forEach((folder) => {
+          if (
+            count.clientReleased.find(
+              (item) => item.cnpjliberado_cnpj.toString() === folder.name
+            )
+          ) {
+            newChildren.push(folder);
+          }
+        });
+        tree.children = newChildren;
+      }
       return tree;
     } catch (error) {
       return response
@@ -27,40 +52,6 @@ class FolderController {
         .send({ message: 'Nenhum diretório encontrado', error: error.message });
     }
   }
-
-  // async store({ request, response }) {
-  //   response.implicitEnd = false;
-  //   const { dir, type } = request.all();
-
-  //   let typeBar = '/';
-  //   if (dir.includes('\\')) typeBar = '\\';
-  //   else if (dir.includes('/')) typeBar = '/';
-  //   else if (dir.includes('//')) typeBar = '//';
-
-  //   const resolved = path.resolve('/', ...dir.split(typeBar));
-
-  //   const isZip = resolved.indexOf('.zip') > 0;
-
-  //   try {
-  //     if (isZip) return response.download(resolved);
-
-  //     if (type === 'directory') {
-  //       await zip(resolved, `${resolved}.zip`);
-  //       return response.download(`${resolved}.zip`);
-  //     }
-
-  //     const zipFile = new AdmZip();
-
-  //     zipFile.addLocalFile(resolved);
-  //     zipFile.writeZip(`${resolved}.zip`);
-
-  //     return response.download(`${resolved}.zip`);
-  //   } catch (error) {
-  //     return response
-  //       .status(400)
-  //       .send({ message: 'Erro ao zipar arquivo', error: error.message });
-  //   }
-  // }
 
   async store({ request, response }) {
     response.implicitEnd = false;
