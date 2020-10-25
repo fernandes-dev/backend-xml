@@ -75,7 +75,7 @@ class CountController {
         return response.status(401).send({
           message: 'Seu cadastro está inativo.',
         });
-
+      count.contador_cnpj = count.contador_cnpj.toString();
       count.token = token;
 
       return count;
@@ -94,14 +94,13 @@ class CountController {
       const token = await Token.findByOrFail({
         token: request.headers().authorization,
       });
-      const { contador_senha, senha_antiga } = request.all();
+      const { contador_nome, contador_cnpj, contador_senha } = request.all();
 
       let count = await Count.findByOrFail({
         contador_id: token.contador_id,
-        contador_senha: senha_antiga,
       });
 
-      count.merge({ contador_senha });
+      count.merge({ contador_nome, contador_cnpj, contador_senha });
 
       await count.save();
 

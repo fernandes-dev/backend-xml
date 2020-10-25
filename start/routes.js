@@ -23,7 +23,7 @@ Route.get('/.well-known/acme-challenge/:key', ({ response }) => {
 Route.post('/login', 'CountController.login');
 Route.post('/verify', 'CountController.verify');
 
-Route.put('/update-password', 'CountController.update');
+Route.put('/update-profile', 'CountController.update');
 
 Route.resource('/count', 'CountController').apiOnly();
 
