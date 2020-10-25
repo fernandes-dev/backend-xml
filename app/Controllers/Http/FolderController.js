@@ -149,6 +149,7 @@ class FolderController {
 
       const resolved = path.resolve('/', value);
       const tree = dree.scan(resolved, { depth });
+      tree.children = tree.children.filter((c) => c.type === 'directory');
 
       return tree;
     } catch (error) {
