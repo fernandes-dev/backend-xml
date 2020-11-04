@@ -124,7 +124,7 @@ class FolderController {
 
     try {
       if (isZip || type === 'zip') {
-        return response.attachment(resolved);
+        return response.send(resolved);
       }
 
       if (type === 'directory') {
@@ -158,7 +158,7 @@ class FolderController {
         zipFile.addLocalFile(resolved);
         zipFile.writeZip(`${newDir}${typeBar}${name}.zip`);
 
-        return response.attachment(`${newDir}${typeBar}${name}.zip`);
+        return response.send(`${newDir}${typeBar}${name}.zip`);
       }
     } catch (error) {
       return response
