@@ -100,6 +100,17 @@ class FolderController {
   async store({ request, response }) {
     response.implicitEnd = false;
 
+    response.header('content-type', 'application/zip');
+    response.header('Access-Control-Allow-Origin', 'http://localhost:8080'); // update to match the domain you will make the request from
+    response.header(
+      'Access-Control-Allow-Origin',
+      'https://contabilidade.vedassistemas.com.br'
+    ); // update to match the domain you will make the request from
+    response.header(
+      'Access-Control-Allow-Headers',
+      'Origin, X-Requested-With, Content-Type, Accept'
+    );
+
     const { dir, type, name } = request.all();
 
     const typeBar = '\\';
@@ -113,8 +124,6 @@ class FolderController {
 
     try {
       if (isZip || type === 'zip') {
-        response.header('content-type', 'application/zip');
-
         return response.download(resolved);
       }
 
