@@ -101,11 +101,7 @@ class FolderController {
     response.implicitEnd = false;
 
     response.header('content-type', 'application/zip');
-    response.header('Access-Control-Allow-Origin', 'http://localhost:8080'); // update to match the domain you will make the request from
-    response.header(
-      'Access-Control-Allow-Origin',
-      'https://contabilidade.vedassistemas.com.br'
-    ); // update to match the domain you will make the request from
+    response.header('Access-Control-Allow-Origin', '*');
     response.header(
       'Access-Control-Allow-Headers',
       'Origin, X-Requested-With, Content-Type, Accept'
