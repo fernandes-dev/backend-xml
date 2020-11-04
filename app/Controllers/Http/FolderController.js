@@ -85,7 +85,7 @@ class FolderController {
   }
 
   async store({ request, response }) {
-    response.implicitEnd = false;
+    // response.implicitEnd = false;
     const { dir, type, name } = request.all();
 
     const typeBar = '\\';
