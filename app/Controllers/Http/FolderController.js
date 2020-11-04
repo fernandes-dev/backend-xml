@@ -1,3 +1,7 @@
+/** @typedef {import('@adonisjs/framework/src/Request')} Request */
+/** @typedef {import('@adonisjs/framework/src/Response')} Response */
+/** @typedef {import('@adonisjs/framework/src/View')} View */
+
 const path = require('path');
 const dree = require('dree');
 // const sizeOnDisk = require('size-on-disk');
@@ -84,8 +88,18 @@ class FolderController {
     }
   }
 
+  /**
+   * Delete a banner with id.
+   * DELETE banners/:id
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+
   async store({ request, response }) {
-    // response.implicitEnd = false;
+    response.implicitEnd = false;
+
     const { dir, type, name } = request.all();
 
     const typeBar = '\\';
@@ -98,7 +112,11 @@ class FolderController {
     const isZip = resolved.indexOf('.zip') > 0;
 
     try {
-      if (isZip || type === 'zip') return response.download(resolved);
+      if (isZip || type === 'zip') {
+        response.header('content-type', 'application/zip');
+
+        return response.download(resolved);
+      }
 
       if (type === 'directory') {
         const archive = archiver('zip', {
@@ -122,7 +140,6 @@ class FolderController {
         await archive.finalize();
 
         output.on('close', () => {
-          // return
           response.send(`${newDir}${typeBar}${name}.zip`);
         });
       }
