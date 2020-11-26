@@ -120,7 +120,7 @@ class FolderController {
 
     try {
       if (isZip || type === 'zip') {
-        return response.send(resolved);
+        return response.attachment(resolved);
       }
 
       if (type === 'directory') {
