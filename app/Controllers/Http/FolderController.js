@@ -120,6 +120,12 @@ class FolderController {
 
     try {
       if (isZip || type === 'zip') {
+        response.header('content-type', 'application/zip');
+        response.header('Access-Control-Allow-Origin', '*');
+        response.header(
+          'Access-Control-Allow-Headers',
+          'Origin, X-Requested-With, Content-Type, Accept'
+        );
         return response.attachment(resolved);
       }
 
