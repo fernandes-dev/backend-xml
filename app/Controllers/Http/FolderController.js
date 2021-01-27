@@ -40,7 +40,9 @@ class FolderController {
         item.cnpjliberado_cnpj.toString()
       );
 
-      let clients = await Client.all();
+      let clients = await Client.query()
+        .orderBy('clientes_razao', 'ASC')
+        .fetch();
       clients = clients.toJSON();
       const clientReleased = [];
       clients.forEach((c) => {
